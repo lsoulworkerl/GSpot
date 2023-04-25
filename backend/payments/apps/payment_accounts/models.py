@@ -3,6 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 
 from apps.base.fields import MoneyField
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
 from django.shortcuts import get_object_or_404
@@ -24,6 +25,7 @@ class Account(models.Model):
         validators=[MinValueValidator(0, message='Insufficient Funds')],
         default=0,
     )
+    currency = models.CharField(max_length=3, default=settings.DEFAULT_CURRENCY)
 
     @classmethod
     @is_amount_positive
