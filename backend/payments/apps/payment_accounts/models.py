@@ -92,3 +92,32 @@ class BalanceChange(models.Model):
 
     class Meta:
         ordering = ['-date_time_creation']
+
+
+class Owner(models.Model):
+    revenue = MoneyField(
+        validators=[MinValueValidator(0, message='Insufficient FUnds')],
+        editable=False,
+        default=0,
+    )
+    income = MoneyField(
+        validators=[MinValueValidator(0, message='Insufficient FUnds')],
+        editable=False,
+        default=0,
+    )
+    commission = models.DecimalField(
+        validators=[MinValueValidator(0, message='indicate the amount of commission')],
+        decimal_places=2,
+        default=Decimal(0.00),
+    )
+    frozen_time = models.DurationField()
+    gift_time = models.DurationField()
+
+    def __str__(self) -> str:
+        return (
+            f'Revenue: {self.revenue}'
+            f'Income: {self.income}'
+            f'Commission: {self.commission}'
+            f'Frozen time: {self.frozen_time}'
+            f'Gift time: {self.gift_time}'
+        )
