@@ -133,8 +133,10 @@ class Invoice(models.Model):
 
     @property
     def total_price(self) -> Decimal:
-        return sum(
-            self.item_purchases.all().values_list('item_price', flat=True),
+        return Decimal(
+            sum(
+                self.item_purchases.all().values_list('item_price', flat=True),
+            ),
         )
 
     def __str__(self):
