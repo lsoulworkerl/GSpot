@@ -53,6 +53,11 @@ class TransferHistory(models.Model):
 
 
 class ItemPurchase(models.Model):
+    class ItemPurchaseStatus(models.TextChoices):
+        PENDING = ('PN', 'PENDING')
+        PAID = ('PD', 'PAID')
+        REFUNDED = ('RF', 'REFUNDED')
+
     MAX_ITEM_PRICE = 10000  # in case of mistake
 
     account_from = models.ForeignKey(
@@ -83,6 +88,7 @@ class ItemPurchase(models.Model):
     item_uuid = models.UUIDField(editable=False, db_index=True)
     is_frozen = models.BooleanField(default=False)
     is_accepted = models.BooleanField(default=False)
+    status = models.CharField(max_length=50, choices=ItemPurchaseStatus.choices)
 
     def __str__(self) -> str:
         return (
@@ -108,7 +114,7 @@ class ItemPurchaseHistory(models.Model):
         editable=False,
         db_index=True,
     )
-    operation_type = models.CharField(
+    event_type = models.CharField(
         max_length=50,
         choices=ItemPurchaseType.choices,
     )
