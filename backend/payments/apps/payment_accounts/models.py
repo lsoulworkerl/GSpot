@@ -3,7 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 
 from apps.base.fields import MoneyField
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
 from django.shortcuts import get_object_or_404
 
@@ -95,6 +95,8 @@ class BalanceChange(models.Model):
 
 
 class Owner(models.Model):
+    MAX_COMMISSION = 100
+
     revenue = MoneyField(
         validators=[MinValueValidator(0, message='Insufficient FUnds')],
         editable=False,
@@ -106,7 +108,13 @@ class Owner(models.Model):
         default=0,
     )
     commission = models.DecimalField(
-        validators=[MinValueValidator(0, message='indicate the amount of commission')],
+        validators=(
+            MinValueValidator(0, message='Should be positive value'),
+            MaxValueValidator(
+                MAX_COMMISSION,
+                message=f'Should be not greater than {MAX_COMMISSION}',
+            ),
+        ),
         decimal_places=2,
         default=Decimal(0.00),
     )

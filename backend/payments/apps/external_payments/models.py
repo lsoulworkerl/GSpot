@@ -28,7 +28,7 @@ class PaymentCommission(models.Model):
     payment_type = models.CharField(max_length=50, verbose_name='type_of_payment')
     commission = models.DecimalField(
         validators=(
-            MinValueValidator(0, message='indicate the amount of commission'),
+            MinValueValidator(0, message='Should be positive value'),
             MaxValueValidator(
                 MAX_COMMISSION,
                 message=f'Should be not greater than {MAX_COMMISSION}',
