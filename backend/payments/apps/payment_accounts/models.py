@@ -77,7 +77,7 @@ class BalanceChange(models.Model):
         editable=False,
         default=0,
     )
-    date_time_creation = models.DateTimeField(
+    created_date = models.DateTimeField(
         auto_now_add=True,
         editable=False,
         db_index=True,
@@ -88,12 +88,12 @@ class BalanceChange(models.Model):
     def __str__(self) -> str:
         return (
             f'Account id:  {self.account_id} '
-            f'Date time of creation: {self.date_time_creation}'
+            f'Date time of creation: {self.created_date}'
             f'Amount: {self.amount}'
         )
 
     class Meta:
-        ordering = ['-date_time_creation']
+        ordering = ['-created_date']
 
 
 class Owner(models.Model):
@@ -118,10 +118,59 @@ class Owner(models.Model):
             ),
         ),
         decimal_places=2,
+        max_digits=settings.MAX_BALANCE_DIGITS,
         default=Decimal(0.00),
     )
     frozen_time = models.DurationField()
     gift_time = models.DurationField()
+
+    @classmethod
+    @is_amount_positive
+    def deposit_revenue(cls, *, pk: int, amount: Decimal) -> Owner:
+        with transaction.atomic():
+            owner = get_object_or_404(
+                cls.objects.select_for_update(),
+                pk=pk,
+            )
+            owner.revenue += amount
+            owner.save()
+        return owner
+
+    @classmethod
+    @is_amount_positive
+    def deposit_income(cls, *, pk: int, amount: Decimal) -> Owner:
+        with transaction.atomic():
+            owner = get_object_or_404(
+                cls.objects.select_for_update(),
+                pk=pk,
+            )
+            owner.income += amount
+            owner.save()
+        return owner
+
+    @classmethod
+    @is_amount_positive
+    def withdraw_revenue(cls, *, pk: int, amount: Decimal) -> Owner:
+        with transaction.atomic():
+            owner = get_object_or_404(
+                cls.objects.select_for_update(),
+                pk=pk,
+            )
+            owner.revenue -= amount
+            owner.save()
+        return owner
+
+    @classmethod
+    @is_amount_positive
+    def withdraw_income(cls, *, pk: int, amount: Decimal) -> Owner:
+        with transaction.atomic():
+            owner = get_object_or_404(
+                cls.objects.select_for_update(),
+                pk=pk,
+            )
+            owner.income -= amount
+            owner.save()
+        return owner
 
     def __str__(self) -> str:
         return (
