@@ -28,7 +28,7 @@ def get_item_for_self_user(item_purchase_id):
     )
 
     increase_user_balance(
-        account=developer.id,
+        account=developer,
         amount=item_purchase.item_price.amount * ((100 - owner.commission) / 100),
     )
 
