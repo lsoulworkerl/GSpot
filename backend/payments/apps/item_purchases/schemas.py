@@ -22,3 +22,9 @@ class PurchaseItemsData(PaymentServiceInfo):
 
     def items_total_price(self) -> Decimal:
         return sum(item_payment_data.price.amount for item_payment_data in self.items_payment_data)
+
+
+@dataclass
+class RefundData:
+    user_uuid: UUID
+    offer_uuid: UUID

@@ -77,7 +77,10 @@ class ItemPurchaseRequest:
             )
 
     def _is_enough_funds(self):
-        return self.user_account.balance >= self.purchase_items_data.price_with_commission
+        return (
+            self.user_account.balance.amount
+            >= self.purchase_items_data.price_with_commission.amount
+        )
 
     def _is_invoice_price_correct(self):
         items_sum_price = self.purchase_items_data.items_total_price()
