@@ -1,14 +1,11 @@
-from apps.base.fields import MoneyAmountSerializerField
-from apps.base.schemas import EnumCurrencies
-from apps.base.serializer import PaymentServiceSerializer
-from rest_enumfield import EnumField
+from apps.base.serializer import MoneySerializer, PaymentServiceSerializer
 from rest_framework import serializers
 
 
 class ItemPaymentData(serializers.Serializer):
     item_uuid = serializers.UUIDField()
     developer_uuid = serializers.UUIDField()
-    price = MoneyAmountSerializerField()
+    price = MoneySerializer()
 
 
 class PurchaseItemsSerializer(PaymentServiceSerializer):
