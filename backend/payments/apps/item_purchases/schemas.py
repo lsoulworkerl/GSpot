@@ -9,7 +9,7 @@ from dataclasses_json import config
 @dataclass
 class ItemPaymentData:
     item_uuid: UUID
-    price: MoneyDataClass
+    price: Decimal
     developer_uuid: UUID
 
 
@@ -19,7 +19,8 @@ class PurchaseItemsData(PaymentServiceInfo):
     user_uuid_to: UUID
     return_url: URL
     items_payment_data: list[ItemPaymentData]
-    price_with_commission: MoneyDataClass
+    price_with_commission: Decimal
+    currency: EnumCurrencies
 
     def items_total_price(self) -> Decimal:
         return sum(item_payment_data.price.amount for item_payment_data in self.items_payment_data)

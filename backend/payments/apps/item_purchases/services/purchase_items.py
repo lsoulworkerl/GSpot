@@ -94,7 +94,7 @@ class ItemPurchaseRequest:
                 self.purchase_items_data.payment_type,
                 items_sum_price,
             )
-        return compare_price == self.purchase_items_data.price_with_commission.amount
+        return compare_price == self.purchase_items_data.price_with_commission
 
     def _is_developers_exists(self):
         developers_list = [
@@ -131,8 +131,8 @@ class InvoiceCreator:
             )
             list_of_item_purchase.append(item_purchase)
         money_data = (
-            self.income_data.price_with_commission.amount,
-            self.income_data.price_with_commission.currency.value,
+            self.income_data.price_with_commission,
+            self.income_data.currency.value,
         )
         invoice = Invoice.objects.create(
             price_with_commission=money_data,
@@ -150,8 +150,8 @@ class InvoiceCreator:
         developer_acc = Account.objects.get(user_uuid=item_payment_data.developer_uuid)
         account_to = get_object_or_404(Account, user_uuid=receiver_account)
         money_data = (
-            item_payment_data.price.amount,
-            item_payment_data.price.currency.value,
+            item_payment_data.price,
+            currency.value,
         )
 
         item_purchase = ItemPurchase.objects.create(
