@@ -9,13 +9,17 @@ services:
 
   payments_db:
     ports:
-      - "5433:5432"
+      - "${POSTGRES_PORT}:5432"
 
   redis:
     ports:
     - "6379:6379"
 
   worker:
+    volumes:
+      - ./:/home/app/web
+  
+  beat:
     volumes:
       - ./:/home/app/web
 

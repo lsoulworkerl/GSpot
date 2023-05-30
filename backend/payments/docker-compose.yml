@@ -38,9 +38,17 @@ services:
       retries: 30
 
   worker:
-    restart: unless-stopped
+    restart: always
     build: .
     command: celery -A config worker --loglevel=info
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  beat:
+    restart: always
+    build: .
+    command: celery -A config beat --loglevel=info
     depends_on:
       redis:
         condition: service_healthy
