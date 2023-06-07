@@ -4,7 +4,7 @@ from apps.base.utils.db_query import multiple_select_or_404
 from apps.external_payments.schemas import YookassaPayoutModel
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 
@@ -14,7 +14,7 @@ from .exceptions import (
     NotPayoutDayError,
     NotValidAccountNumberError,
 )
-from .models import Account
+from .models import Account, Owner
 from .schemas import BalanceIncreaseData, CommissionCalculationInfo
 from .services.balance_change import request_balance_deposit_url
 from .services.payment_commission import calculate_payment_with_commission
@@ -100,3 +100,11 @@ class BalanceViewSet(viewsets.ViewSet):
     def retrieve(self, request, user_uuid=None):
         account = get_object_or_404(Account, user_uuid=user_uuid)
         return Response(self.balance_serializer_class(account).data)
+
+
+class OwnerView(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
+    queryset = Owner.objects.first()
+    serializer_class = serializers.OwnerSerializer
+
+    def get_object(self):
+        return self.get_queryset()
